@@ -1,33 +1,35 @@
 package org.example;
 
 public class Main {
-    public static void main(String[] args) {
-            Student student1 = new Student(1, "John", "Doe");
-            Student student2 = new Student(2, "Jane", "Smith");
+        public static void main(String[] args) {
+                Student student1 = new Student(1, "John", "Doe");
+                Student student2 = new Student(2, "Jane", "Smith");
+                Student student3 = new Student(3, "Michael", "Johnson");
 
-            System.out.println("Student 1 ID: " + student1.getStudentId());
-            System.out.println("Student 1 Full Name: " + student1.getFullName());
+                StudentsGroup group = new StudentsGroup(student1);
 
-            StudentsGroup group = new StudentsGroup(student1);
+                group.addStudent(student2);
+                group.addStudent(student3);
 
-            group.addStudent(student2);
+                group.changeGroupLeader(student2);
 
-            System.out.println("Group Leader: " + group.getGroupLeader().getFullName());
+                group.addTask("Learn encapsulation");
+                group.addTask("Complete project");
 
-            Student newLeader = new Student(3, "Michael", "Johnson");
-            group.changeGroupLeader(newLeader);
-            System.out.println("New Group Leader: " + group.getGroupLeader().getFullName());
+                group.markTaskCompleted(student1, "Learn encapsulation");
+                group.markTaskCompleted(student1, "Complete project");
+                group.markTaskCompleted(student3, "Learn encapsulation");
 
-            group.addTask("Learn encapsulation");
-            group.addTask("Complete project");
+                System.out.println("Group Leader: " + group.getGroupLeader().getFullName());
 
-            System.out.println("Tasks in the group:");
-            for (String task : group.getTasksList()) {
-                System.out.println(task);
-            }
+                System.out.println("Students in the group:");
+                for (Student student : group.getStudentsList()) {
+                        System.out.println(student.getFullName());
+                }
 
-            group.markTaskCompleted(student1, 0);
-
-            System.out.println("Completed tasks for " + student1.getFullName() + ": " + group.getCompletedTasks(student1));
+                System.out.println("Tasks in the group:");
+                for (String task : group.getTasksCompleted().keySet()) {
+                        System.out.println(task + " - Completed by: " + group.getTasksCompleted().get(task));
+                }
         }
     }

@@ -5,43 +5,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 class StudentsGroup {
     private Student groupLeader;
     private List<Student> studentsList;
-    private List<String> tasksList;
-    private Map<Student, List<Integer>> completedTasks;
+    private Map<String, List<Student>> tasksCompleted;
 
     public StudentsGroup(Student groupLeader) {
         this.groupLeader = groupLeader;
         this.studentsList = new ArrayList<>();
-        this.tasksList = new ArrayList<>();
-        this.completedTasks = new HashMap<>();
+        this.studentsList.add(groupLeader);
+        this.tasksCompleted = new HashMap<>();
     }
 
     public void changeGroupLeader(Student newLeader) {
+        if (!studentsList.contains(newLeader)) {
+            studentsList.add(newLeader);
+        }
         this.groupLeader = newLeader;
     }
 
     public void addStudent(Student student) {
         studentsList.add(student);
-        completedTasks.put(student, new ArrayList<>());
     }
 
     public void removeStudent(Student student) {
-        studentsList.remove(student);
-        completedTasks.remove(student);
+        if (student != groupLeader) {
+            studentsList.remove(student);
+            tasksCompleted.values().forEach(students -> students.remove(student));
+        } else {
+            System.out.println("Cannot remove the group leader from the students list.");
+        }
     }
 
     public void addTask(String task) {
-        tasksList.add(task);
+        tasksCompleted.put(task, new ArrayList<>());
     }
 
-    public void markTaskCompleted(Student student, int taskIndex) {
-        if (studentsList.contains(student) && taskIndex >= 0 && taskIndex < tasksList.size()) {
-            List<Integer> studentCompletedTasks = completedTasks.get(student);
-            if (!studentCompletedTasks.contains(taskIndex)) {
-                studentCompletedTasks.add(taskIndex);
+    public void markTaskCompleted(Student student, String task) {
+        if (student == null) {
+            System.out.println("Cannot mark task completed for null student.");
+            return;
+        }
+
+        if (studentsList.contains(student) && tasksCompleted.containsKey(task)) {
+            List<Student> studentsCompletedTask = tasksCompleted.get(task);
+            if (!studentsCompletedTask.contains(student)) {
+                studentsCompletedTask.add(student);
             }
+        } else {
+            System.out.println("Invalid student or task.");
         }
     }
 
@@ -49,11 +62,11 @@ class StudentsGroup {
         return groupLeader;
     }
 
-    public List<String> getTasksList() {
-        return tasksList;
+    public List<Student> getStudentsList() {
+        return studentsList;
     }
 
-    public List<Integer> getCompletedTasks(Student student) {
-        return completedTasks.get(student);
+    public Map<String, List<Student>> getTasksCompleted() {
+        return tasksCompleted;
     }
 }
